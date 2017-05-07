@@ -143,7 +143,7 @@ func (t *SmartLinerShippingTool) Init(stub shim.ChaincodeStubInterface, function
 
 	// Create application Table
 	err = stub.CreateTable("ShipDetails", []*shim.ColumnDefinition{
-		&shim.ColumnDefinition{Name: "shipId", Type: shim.ColumnDefinition_STRING, Key: false},
+		&shim.ColumnDefinition{Name: "shipId", Type: shim.ColumnDefinition_STRING, Key: true},
 		&shim.ColumnDefinition{Name: "vesselName", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "voyageNo", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "linerCompanyName", Type: shim.ColumnDefinition_STRING, Key: false},
@@ -164,15 +164,7 @@ func (t *SmartLinerShippingTool) Init(stub shim.ChaincodeStubInterface, function
 		return nil, nil
 	}
 
-	// Create Container Table
-	err = stub.CreateTable("ContainerShippingDetails", []*shim.ColumnDefinition{
-		&shim.ColumnDefinition{Name: "shipId", Type: shim.ColumnDefinition_STRING, Key: false},
-		&shim.ColumnDefinition{Name: "containerId", Type: shim.ColumnDefinition_STRING, Key: false},
-		
-	})
-	if err != nil {
-		return nil, errors.New("Failed creating ContainerShippingDetails table.")
-	}
+	
 	// Check if table already exists
 	//CONTAINER TYPE - START
 	_, err = stub.GetTable("ContainerDetails")
@@ -183,7 +175,7 @@ func (t *SmartLinerShippingTool) Init(stub shim.ChaincodeStubInterface, function
 
 	// Create ContainerDetails Table
 	err = stub.CreateTable("ContainerDetails", []*shim.ColumnDefinition{
-		&shim.ColumnDefinition{Name: "containerId", Type: shim.ColumnDefinition_STRING, Key: false},
+		&shim.ColumnDefinition{Name: "containerId", Type: shim.ColumnDefinition_STRING, Key: true},
 		&shim.ColumnDefinition{Name: "shipId", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "containerType", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "size", Type: shim.ColumnDefinition_STRING, Key: false},
@@ -191,14 +183,14 @@ func (t *SmartLinerShippingTool) Init(stub shim.ChaincodeStubInterface, function
 		&shim.ColumnDefinition{Name: "codeISO", Type: shim.ColumnDefinition_STRING, Key: false},
 	})
 	if err != nil {
-		return nil, errors.New("Failed creating User table.")
+		return nil, errors.New("Failed creating ContainerDetails table.")
 	}
 	//CONTAINER TYPE - END
 	
 	
 	//CHECK Below - Can 2 states be given?
 	stub.PutState("ContainerDetailsIncrement", []byte("1"))
-	stub.PutState("BookingNoincrement", []byte("1"))
+
 	return nil, nil
 }
 // generate booking number for shipping item
