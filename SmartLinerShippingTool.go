@@ -285,6 +285,41 @@ func (t *SmartLinerShippingTool) getShipDetailsByShipId(stub shim.ChaincodeStubI
 
 }
 
+//view all ship details from ship_details table
+func (t *SmartLinerShippingTool) viewAllShipDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+	var columns []shim.Column
+
+	rows, err := stub.GetRows("ShipDetails", columns)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to retrieve row")
+	}
+			
+	res2E:= []*ShipDetails{}	
+	
+	for row := range rows {		
+		newApp:= new(ShipDetails)
+		newApp.ShipId = row.Columns[0].GetString_()
+		newApp.VesselName = row.Columns[1].GetString_()
+		newApp.VoyageNo = row.Columns[2].GetString_()
+		newApp.LinerCompanyName = row.Columns[3].GetString_()
+		newApp.Latitude = row.Columns[4].GetString_()
+		newApp.Longitude = row.Columns[5].GetString_()
+		newApp.Capacity = row.Columns[6].GetString_()
+		newApp.NumberOfContainerFilledUp = row.Columns[7].GetString_()
+		
+		res2E=append(res2E,newApp)		
+					
+	}
+	
+    mapB, _ := json.Marshal(res2E)
+    fmt.Println(string(mapB))
+	
+	return mapB, nil
+
+}
+
+
 //Loading a Container in a Liner
 func (t *SmartLinerShippingTool) loadContainerIntoLiner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
@@ -585,7 +620,7 @@ func (t *SmartLinerShippingTool) raiseEventToMoveContainer(stub shim.ChaincodeSt
 }
 
 
-// Invoke is the entry point to invoke a chaincode function
+// Invoke is the entry point to execute Insert/Update/Delete type chaincode function
 func (t *SmartLinerShippingTool) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
 
@@ -608,7 +643,12 @@ func (t *SmartLinerShippingTool) Query(stub shim.ChaincodeStubInterface, functio
 	 if function == "raiseEventToMoveContainer" {
 		t := SmartLinerShippingTool{}
 		return t.raiseEventToMoveContainer(stub, args)		
-	} 
+	} else if function == "getShipDetailsByShipId" {
+		return t.getShipDetailsByShipId(stub, args)
+	}else if function == "viewAllShipDetails" {
+		return t.viewAllShipDetails(stub, args)
+	}
+		
 	return nil, errors.New("Invalid query function name.")
 }
 
