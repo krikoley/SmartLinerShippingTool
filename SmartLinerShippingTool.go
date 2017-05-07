@@ -632,18 +632,17 @@ func (t *SmartLinerShippingTool) Invoke(stub shim.ChaincodeStubInterface, functi
 		return t.loadContainerIntoLiner(stub, args)
 	}else if function == "updateShipLocation" {
 		return t.updateShipLocation(stub, args)
+	}else if function == "raiseEventToMoveContainer" {
+		return t.raiseEventToMoveContainer(stub, args)
 	}
-		fmt.Println("invoke did not find func: " + function)
+	fmt.Println("invoke did not find func: " + function)
 
 	return nil, errors.New("Received unknown function invocation: " + function)
 }
 // Query is our entry point for queries
 func (t *SmartLinerShippingTool) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 
-	 if function == "raiseEventToMoveContainer" {
-		t := SmartLinerShippingTool{}
-		return t.raiseEventToMoveContainer(stub, args)		
-	} else if function == "getShipDetailsByShipId" {
+    if function == "getShipDetailsByShipId" {
 		return t.getShipDetailsByShipId(stub, args)
 	}else if function == "viewAllShipDetails" {
 		return t.viewAllShipDetails(stub, args)
